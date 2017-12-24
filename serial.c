@@ -5,12 +5,13 @@
 
 #define BUFF_SIZE 50 // Максимальная длина обрабатываемой строки
 
-int N, K; // Длина алфавита, длина искомой строки
+int alphabet_length, wanted_length; // Длина алфавита, длина искомой строки
 int thf[BUFF_SIZE]; // Индексный массив
 char *alphabet; // Алфавит поиска
 char *wanted; // Искомая строка
 unsigned char md5_input[MD5_DIGEST_LENGTH]; // Хеш искомой функции
 static int count_perm = 0;
+int isKey = 0;
 
 // Вывод хеша
 void print(unsigned char *str) {
@@ -26,12 +27,12 @@ int compare_hash(const unsigned char *a) {
 }
 
 void repeat_permutations(int k) {
-    if (k == K) {
+    if (k == wanted_length) {
         char current_line[BUFF_SIZE];
         unsigned char cur_key[MD5_DIGEST_LENGTH];
-
+//Заполнение текущей строки 
         int i;
-        for (i = 0; i < K; i++) {
+        for (i = 0; i < wanted_length; i++) {
             current_line[i] = alphabet[thf[i]];
         }
         current_line[i] = '\0';
@@ -41,13 +42,15 @@ void repeat_permutations(int k) {
             (cur_key)
         );
 
-        count_perm++;
+        count_perm++; //счетчик перебранных вариантов 
         /*
          printf("%s|%d\n", current_line, count_perm);
          printf("[%d] \t(%s)\t", (int)strlen(current_line), current_line);
          print(cur_key);printf(" ");print(md5_input);
         */
+        // compare - сравнение
         if (compare_hash(cur_key) == 0) {
+            isKey = 1;
             print(cur_key);
             printf(" ");
             print(md5_input);
@@ -57,7 +60,7 @@ void repeat_permutations(int k) {
 
         //printf("\n");
     } else {
-        for (int j = N - 1; j >= 0; j--) {
+        for (int j = 0; j < alphabet_length; j++) {
             // Генерируем последовательность
             thf[k] = j;
             // Уходим в рекурсию для 1 элемента
@@ -75,8 +78,8 @@ int main(int argc, char **args) {
     alphabet = args[1];
     wanted = args[2];
 
-    N = (int) strlen(alphabet); // Длина алфавита
-    K = atoi(args[3]); // Искомая строка
+    alphabet_length = (int) strlen(alphabet); // Длина алфавита
+    wanted_length = atoi(args[3]); // Искомая строка
 
     printf("Alphabet: %s\nWanted: %s\n\n", alphabet, wanted);
 
@@ -87,12 +90,13 @@ int main(int argc, char **args) {
 
     // Вызываем функцию перебора
     // уменьшая длину искомой строки до 1
-    int h = K;
-    K = 1;
+    int h = wanted_length;
+    wanted_length = 1;
     do {
         repeat_permutations(0);
-    } while (K++ < h);
+    } while (wanted_length++ < h);
 
-    printf("\n\n%d", count_perm);
+    if (!isKey) printf("Sorry, but you password not found\n");
+    printf("All permutations %d\n", count_perm);
     return 0;
 }
