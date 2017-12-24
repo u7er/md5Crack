@@ -10,5 +10,5 @@ add_executable(${PROJECT_NAME}_serial ${SOURCE_FILES_serial})
 target_link_libraries(${PROJECT_NAME}_serial crypto)
 
 add_executable(${PROJECT_NAME}_parallel ${SOURCE_FILES_parallel})
-target_link_libraries(${PROJECT_NAME}_parallel crypto)
+target_link_libraries(${PROJECT_NAME}_parallel crypto m)
 
