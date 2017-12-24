@@ -14,7 +14,6 @@ char *wanted; // Искомая строка
 unsigned char md5_input[MD5_DIGEST_LENGTH]; // Хеш искомой функции
 static int count_perm = 0;
 int isKey = 0;
-
 ull_t start_comb, comb_per_proc;
 int ind[256];
 char *buffer_current_line;
